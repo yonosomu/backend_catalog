@@ -11,3 +11,16 @@ def create_product(session: Session, data: ProductCreate) -> Product:
     session.refresh(product)
 
     return product
+
+
+def get_product(session: Session, product_id: int) -> Product | None:
+    session_call = session.get(Product, product_id)
+    return session_call
+
+
+def list_products(session: Session):
+    statement = select(Product)
+    statement = statement.order_by(Product.id)
+    result = session.scalars(statement)
+    result = result.all()
+    return result
