@@ -1,17 +1,30 @@
 from fastapi.testclient import TestClient
 from services.main import app
 import pytest
-from services.storage import products
+from services.database import engine, get_session
+from sqlalchemy.orm import Session
 
 client = TestClient(app)
 
-
 @pytest.fixture(autouse=True)
-def clear_products():
-    products.clear()
-    yield
-    products.clear()
+def isolate_database():
+    if engine.url.database != "catalog_test":
+        raise RuntimeError("Тесты разрешены только в catalog_test")
+    connection = engine.connect()
+    transaction = connection.begin()
+    db_session = Session(bind=connection, join_transaction_mode="create_savepoint")
 
+    def override_get_session():
+        return db_session
+
+    try:
+        app.dependency_overrides[get_session] = override_get_session
+        yield
+    finally:
+        app.dependency_overrides.pop(get_session, None)
+        db_session.close()
+        transaction.rollback()
+        connection.close()
 
 def test_health():
     response = client.get("/health")

@@ -10,7 +10,14 @@ class ProductCreate(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
     name: str = Field(min_length=1, max_length=100)
     price: Decimal = Field(gt=0, le=Decimal("99999999.99"), decimal_places=2)
-    stock: int = Field(ge=0, strict=True)
+    stock: int = Field(ge=0, le=9223372036854775807, strict=True)
+
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, value: str) -> str:
+        if "\x00" in value:
+            raise ValueError("Название не должно содержать нулевой символ")
+        return value
 
     @field_validator("price", mode="before")
     @classmethod
@@ -25,6 +32,7 @@ class ProductCreate(BaseModel):
 
 
 class ProductRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: int = Field(gt=0, strict=True)
     name: str = Field(min_length=1, max_length=100)
     price: Decimal = Field(gt=0, le=Decimal("99999999.99"), decimal_places=2)
