@@ -3,8 +3,12 @@ from services.main import app
 import pytest
 from services.database import engine, get_session
 from sqlalchemy.orm import Session
+from services import repository
+from services.schemas import ProductCreate
+
 
 client = TestClient(app)
+
 
 @pytest.fixture(autouse=True)
 def isolate_database():
@@ -12,19 +16,21 @@ def isolate_database():
         raise RuntimeError("Тесты разрешены только в catalog_test")
     connection = engine.connect()
     transaction = connection.begin()
-    db_session = Session(bind=connection, join_transaction_mode="create_savepoint")
+    db_session = Session(
+        bind=connection, join_transaction_mode="create_savepoint")
 
     def override_get_session():
         return db_session
 
     try:
         app.dependency_overrides[get_session] = override_get_session
-        yield
+        yield db_session
     finally:
         app.dependency_overrides.pop(get_session, None)
         db_session.close()
         transaction.rollback()
         connection.close()
+
 
 def test_health():
     response = client.get("/health")
@@ -139,3 +145,34 @@ def test_create_product_valid_boundaries(name, price, expected_name, expected_pr
     assert created["id"] > 0
     assert created == {
         "id": created["id"], "name": expected_name, "price": expected_price, "stock": 0}
+
+
+def test_decrease_stock_success(isolate_database):
+    session = isolate_database
+    product = repository.create_product(
+        session, data=ProductCreate(name="Iphone", price="1500.00", stock=10))
+    result = repository.decrease_stock(session, product.id, 3)
+    assert result is True
+    session.refresh(product)
+    assert product.stock == 10-3
+
+
+def test_decrease_stock_insufficient_stock(isolate_database):
+    session = isolate_database
+    product = repository.create_product(
+        session, data=ProductCreate(name="Samsung", price="90.00", stock=10))
+    result = repository.decrease_stock(session, product.id, 11)
+    assert result is False
+    session.refresh(product)
+    assert product.stock == 10
+
+
+@pytest.mark.parametrize("quantity", [-1, 0, True, "3", 1.5])
+def test_decrease_stock_invalid_quantity(isolate_database, quantity):
+    session = isolate_database
+    product = repository.create_product(session, data=ProductCreate(
+        name="Microwawe", price="75.00", stock=10))
+    with pytest.raises(ValueError):
+        repository.decrease_stock(session, product.id, quantity)
+    session.refresh(product)
+    assert product.stock == 10

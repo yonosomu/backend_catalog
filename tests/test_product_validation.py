@@ -45,9 +45,11 @@ def test_invalid_database_value_returns_422_without_write(monkeypatch, field, va
     from services.database import get_session
     from services.main import app
 
-    create = Mock(side_effect=AssertionError("Invalid input reached repository"))
+    create = Mock(side_effect=AssertionError(
+        "Invalid input reached repository"))
     monkeypatch.setattr(repository, "create_product", create)
-    monkeypatch.setitem(app.dependency_overrides, get_session, lambda: object())
+    monkeypatch.setitem(app.dependency_overrides,
+                        get_session, lambda: object())
     payload = {"name": "Блокнот", "price": "150.00", "stock": 0}
     payload[field] = value
 
@@ -55,5 +57,6 @@ def test_invalid_database_value_returns_422_without_write(monkeypatch, field, va
         response = client.post("/products", json=payload)
 
     assert response.status_code == 422
-    assert any(error["loc"] == ["body", field] for error in response.json()["detail"])
+    assert any(error["loc"] == ["body", field]
+               for error in response.json()["detail"])
     create.assert_not_called()
