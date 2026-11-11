@@ -2,7 +2,11 @@
 
 <!-- tech-stack-badges -->
 <p align="center">
-![Python](https://img.shields.io/badge/Python-3.14.7-3776AB?style=for-the-badge&logo=python&logoColor=white) ![FastAPI](https://img.shields.io/badge/FastAPI-0.146.0-009688?style=for-the-badge&logo=fastapi&logoColor=white) ![Pydantic](https://img.shields.io/badge/Pydantic-2.14.1-E92063?style=for-the-badge&logo=pydantic&logoColor=white) ![pytest](https://img.shields.io/badge/pytest-9.1.1-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white) ![Uvicorn](https://img.shields.io/badge/Uvicorn-0.54.0-4051B5?style=for-the-badge)
+<img alt="Python" src="https://img.shields.io/badge/Python-3.14.7-3776AB?style=for-the-badge&amp;logo=python&amp;logoColor=white" />
+<img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-0.146.0-009688?style=for-the-badge&amp;logo=fastapi&amp;logoColor=white" />
+<img alt="Pydantic" src="https://img.shields.io/badge/Pydantic-2.14.1-E92063?style=for-the-badge&amp;logo=pydantic&amp;logoColor=white" />
+<img alt="pytest" src="https://img.shields.io/badge/pytest-9.1.1-0A9EDC?style=for-the-badge&amp;logo=pytest&amp;logoColor=white" />
+<img alt="Uvicorn" src="https://img.shields.io/badge/Uvicorn-0.54.0-4051B5?style=for-the-badge" />
 </p>
 <!-- /tech-stack-badges -->
 
