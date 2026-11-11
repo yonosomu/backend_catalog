@@ -1,5 +1,11 @@
 # OrderFlow — backend_catalog
 
+<!-- tech-stack-badges -->
+<p align="center">
+![Python](https://img.shields.io/badge/Python-3.14.7-3776AB?style=for-the-badge&logo=python&logoColor=white) ![FastAPI](https://img.shields.io/badge/FastAPI-0.146.0-009688?style=for-the-badge&logo=fastapi&logoColor=white) ![Pydantic](https://img.shields.io/badge/Pydantic-2.14.1-E92063?style=for-the-badge&logo=pydantic&logoColor=white) ![pytest](https://img.shields.io/badge/pytest-9.1.1-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white) ![Uvicorn](https://img.shields.io/badge/Uvicorn-0.54.0-4051B5?style=for-the-badge)
+</p>
+<!-- /tech-stack-badges -->
+
 Некоммерческий учебный backend-проект для изучения Python и разработки системы оформления заказов с нуля.
 
 Сейчас реализован первый компонент — HTTP-каталог товаров на FastAPI с хранением в памяти. Можно создать товар, получить список товаров и найти товар по ID. PostgreSQL, сервис заказов, RabbitMQ и Telegram-уведомления относятся к следующим этапам и пока не реализованы.
